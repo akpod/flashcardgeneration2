@@ -2,6 +2,9 @@ import streamlit as st
 import ollama
 import PyPDF2
 
+st.set_page_config(page_title="AI Based Flashcard Generator", page_icon="📚")
+
+
 def extract_text_from_pdf(pdf_file, pages):
     reader = PyPDF2.PdfReader(pdf_file)
     text = ""
@@ -48,6 +51,9 @@ def remove_empty_lines(text):
 
 # Streamlit App
 st.title("AI Based Flashcard Generator")
+st.header("AI Based Flashcard Generator")
+
+
 
 uploaded_file = st.file_uploader("Upload a PDF file", type="pdf")
 
@@ -57,9 +63,10 @@ if uploaded_file:
 
     start_page = st.number_input("Start Page", min_value=1, max_value=total_pages, value=1)
     end_page = st.number_input("End Page", min_value=start_page, max_value=total_pages, value=total_pages)
+    chunk_size_input = st.number_input("Chunk Size", min_value=5, max_value=20, value=10)
 
     if st.button("Process PDF"):
-        page_ranges = split_ranges(start_page - 1, end_page - 1)  # Adjust for 0-based index
+        page_ranges = split_ranges(start_page - 1, end_page - 1, chunk_size_input)  # Adjust for 0-based index
         all_flashcards = ""
 
         for idx, (start, end) in enumerate(page_ranges):
