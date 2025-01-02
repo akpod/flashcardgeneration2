@@ -24,15 +24,27 @@ def generate_flashcards(book):
                     {book}
                     ```
                     Please remove any intros you add, no intros or outros like Here are the flashcards, just list them out, please make it really good questions, and please don't say note that I have added this this stuff, only the questions I want, pleaseeee
-    """
+            """
     flashcards = ollama.process_data(promot)
     return flashcards
 
 def split_ranges(start, end, chunk_size=10):
     return [(i, min(i + chunk_size - 1, end)) for i in range(start, end + 1, chunk_size)]
 
+def process_pdf_in_chunks(file_name, page_range):
+    start_page, end_page = page_range
+    ranges = split_ranges(start_page, end_page)
+
+    for start, end in ranges:
+        book_data = extract_text_from_pdf(file_name, [start, end])
+        chunk_output = generate_flashcards(book_data)
+        clean_output = remove_empty_lines(chunk_output)
+        return clean_output
+
 def remove_empty_lines(text):
     return "\n".join([line.strip() for line in text.splitlines() if line.strip()])
+
+
 
 # Streamlit App
 st.title("AI Based Flashcard Generator")
@@ -43,21 +55,20 @@ if uploaded_file:
     total_pages = len(PyPDF2.PdfReader(uploaded_file).pages)
     st.write(f"Total Pages in PDF: {total_pages}")
 
-    start_page = st.number_input("Start Page", min_value=0, max_value=total_pages - 1, value=0)
-    end_page = st.number_input("End Page", min_value=0, max_value=total_pages - 1, value=total_pages - 1)
+    start_page = st.number_input("Start Page", min_value=1, max_value=total_pages, value=1)
+    end_page = st.number_input("End Page", min_value=start_page, max_value=total_pages, value=total_pages)
 
     if st.button("Process PDF"):
-        page_ranges = split_ranges(start_page, end_page)
+        page_ranges = split_ranges(start_page - 1, end_page - 1)  # Adjust for 0-based index
         all_flashcards = ""
 
         for idx, (start, end) in enumerate(page_ranges):
             st.write(f"Processing pages {start + 1} to {end + 1}...")
-            book_data = extract_text_from_pdf(uploaded_file, range(start, end + 1))
-            chunk_output = generate_flashcards(book_data)
-            clean_output = remove_empty_lines(chunk_output)
+            clean_output = process_pdf_in_chunks(uploaded_file, (start_page, end))
             all_flashcards += clean_output + "\n"
 
-        st.text_area("Generated Flashcards", all_flashcards, height=300)
-        st.download_button("Copy Flashcards", all_flashcards, file_name="flashcards.txt")
+        st.code(all_flashcards, language='text')
+        #st.download_button("Copy Flashcards", all_flashcards, file_name="flashcards.txt")
 
         st.success("Processing complete!")
+
