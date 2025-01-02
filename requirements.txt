@@ -1,3 +1,2 @@
 PyPDF2
-libpython2.7-stdlib
 streamlit
