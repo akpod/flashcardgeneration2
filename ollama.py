@@ -7,9 +7,10 @@ def ollama_api(prompt, model):
         output = subprocess.check_output([
             "curl", "-s", "-X", "POST", "https://sacred-currently-quail.ngrok-free.app/api/generate", 
             "-d", json.dumps({
-                "role": "user",
+                "role": "system",
                 "model": model,
-                "prompt": prompt
+                "prompt": prompt,
+                "temprature": "1"
             })
         ])
 
