@@ -49,7 +49,7 @@ def remove_empty_lines(text):
 
 
 
-# Streamlit App
+#streamlit
 st.title("AI Based Flashcard Generator")
 st.header("AI Based Flashcard Generator")
 
@@ -66,7 +66,7 @@ if uploaded_file:
     chunk_size_input = st.number_input("Chunk Size", min_value=5, max_value=20, value=10)
 
     if st.button("Process PDF"):
-        page_ranges = split_ranges(start_page - 1, end_page - 1, chunk_size_input)  # Adjust for 0-based index
+        page_ranges = split_ranges(start_page - 1, end_page - 1, chunk_size_input)  
         all_flashcards = ""
 
         for idx, (start, end) in enumerate(page_ranges):
@@ -75,7 +75,7 @@ if uploaded_file:
             all_flashcards += clean_output + "\n"
 
         st.code(all_flashcards, language='text')
-        #st.download_button("Copy Flashcards", all_flashcards, file_name="flashcards.txt")
+        st.download_button("Download", all_flashcards, file_name="flashcards.txt")
 
         st.success("Processing complete!")
 
