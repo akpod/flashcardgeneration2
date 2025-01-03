@@ -13,10 +13,10 @@ def ollama_api(prompt, model):
             })
         ])
 
-        # Parse the output as JSON
+        
         response_data = json.loads(output)
 
-        # Extract the text response from the candidates
+        
         text_response = response_data['candidates'][0]['content']['parts'][0]['text']
 
         return text_response
