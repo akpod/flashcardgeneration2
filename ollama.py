@@ -1,7 +1,7 @@
 import subprocess
 import json
 
-api_key = "YOUR-API-KEY"
+api_key = "AIzaSyCc01pIA69-ng3RJeGzl4Mu9UPDCdHIChE"
 
 def ollama_api(prompt, model):
     try:
