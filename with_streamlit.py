@@ -63,7 +63,7 @@ if uploaded_file:
 
     start_page = st.number_input("Start Page", min_value=1, max_value=total_pages, value=1)
     end_page = st.number_input("End Page", min_value=start_page, max_value=total_pages, value=total_pages)
-    chunk_size_input = st.number_input("Chunk Size", min_value=5, max_value=20, value=10)
+    chunk_size_input = st.number_input("Chunk Size", min_value=1, max_value=20, value=10)
 
     if st.button("Process PDF"):
         page_ranges = split_ranges(start_page - 1, end_page - 1, chunk_size_input)  
